@@ -1,0 +1,21 @@
+services:
+  jupyter:
+    build:
+      context: .
+      dockerfile_inline: |
+        FROM python:3.11-slim
+
+        # Установка зависимостей
+        RUN apt update && \
+            apt install -y curl git wget unzip build-essential && \
+            pip install --no-cache-dir jupyterlab
+
+        # Рабочая папка
+        WORKDIR /notebooks
+
+        # Открываем порт и запускаем JupyterLab без токена
+        CMD ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--allow-root", "--no-browser", "--NotebookApp.token=''", "--NotebookApp.password=''"]
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./notebooks:/notebooks
